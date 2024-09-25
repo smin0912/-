@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A 플랫폼</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #questionForm, #answerForm {
+            display: none;
+            position: fixed;
+            bottom: 50px;
+            right: 50px;
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #questions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .question-box {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 200px;
+            height: 100px;
+            cursor: pointer;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .answer-box {
+            display: none;
+            margin-top: 10px;
+        }
+        #writeQuestionBtn {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>학생들끼리 Q&A 플랫폼</h2>
+
+<div id="questions"></div>
+
+<!-- 질문 작성 폼 -->
+<div id="questionForm">
+    <h3>질문 작성</h3>
+    <textarea id="questionInput" rows="4" cols="30" placeholder="질문을 작성하세요"></textarea><br><br>
+    <button onclick="submitQuestion()">업로드</button>
+    <button onclick="closeForm()">닫기</button>
+</div>
+
+<!-- 답변 작성 폼 -->
+<div id="answerForm">
+    <h3>답변 작성</h3>
+    <textarea id="answerInput" rows="4" cols="30" placeholder="답변을 작성하세요"></textarea><br><br>
+    <button onclick="submitAnswer()">업로드</button>
+    <button onclick="closeForm()">닫기</button>
+</div>
+
+<button id="writeQuestionBtn" onclick="openForm()">작성하기</button>
+
+<script>
+    let questions = [];
+    let currentQuestionIndex = -1;
+
+    // 질문 작성 폼 열기
+    function openForm() {
+        document.getElementById('questionForm').style.display = 'block';
+    }
+
+    // 질문 작성 폼 닫기
+    function closeForm() {
+        document.getElementById('questionForm').style.display = 'none';
+        document.getElementById('answerForm').style.display = 'none';
+    }
+
+    // 질문 업로드
+    function submitQuestion() {
+        const questionText = document.getElementById('questionInput').value;
+        if (questionText.trim()) {
+            questions.push({ text: questionText, answer: '' });
+            displayQuestions();
+            document.getElementById('questionInput').value = '';
+            closeForm();
+        }
+    }
+
+    // 질문 목록 보여주기
+    function displayQuestions() {
+        const questionContainer = document.getElementById('questions');
+        questionContainer.innerHTML = '';
+        questions.forEach((q, index) => {
+            const questionBox = document.createElement('div');
+            questionBox.classList.add('question-box');
+            questionBox.innerText = q.text;
+            questionBox.onclick = () => openAnswerForm(index);
+            questionContainer.appendChild(questionBox);
+        });
+    }
+
+    // 답변 작성 폼 열기
+    function openAnswerForm(index) {
+        currentQuestionIndex = index;
+        document.getElementById('answerForm').style.display = 'block';
+    }
+
+    // 답변 업로드
+    function submitAnswer() {
+        const answerText = document.getElementById('answerInput').value;
+        if (answerText.trim()) {
+            questions[currentQuestionIndex].answer = answerText;
+            document.getElementById('answerInput').value = '';
+            closeForm();
+            displayAnswers();
+        }
+    }
+
+    // 답변 목록 보여주기
+    function displayAnswers() {
+        const questionContainer = document.getElementById('questions');
+        questionContainer.innerHTML = '';
+        questions.forEach((q, index) => {
+            const questionBox = document.createElement('div');
+            questionBox.classList.add('question-box');
+            questionBox.innerText = q.text;
+            questionBox.onclick = () => openAnswerForm(index);
+            questionContainer.appendChild(questionBox);
+
+            if (q.answer) {
+                const answerBox = document.createElement('div');
+                answerBox.classList.add('answer-box');
+                answerBox.innerText = `답변: ${q.answer}`;
+                questionBox.appendChild(answerBox);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
+
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: echo Hello, world!
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          echo Add other actions to build,
+          echo test, and deploy your project.
